@@ -1,10 +1,12 @@
-// /* eslint-disable prettier/prettier */
-// import { Module } from '@nestjs/common';
-// import { UserController } from './user.controller';
-// import { UserService } from './user.service';
+// src/user/user.module.ts
+import { Module } from '@nestjs/common';
+import { UserController } from './user.controller';
+import { UserService } from './user.service';
+import { PrismaModule } from 'src/prisma/prisma.module'; // Import Prisma module
 
-// @Module({
-//     controllers: [UserController],
-//     providers: [UserService]
-// })
-// export class UserModule { }
+@Module({
+  imports: [PrismaModule], // Make PrismaService available
+  controllers: [UserController],
+  providers: [UserService],
+})
+export class UserModule {}

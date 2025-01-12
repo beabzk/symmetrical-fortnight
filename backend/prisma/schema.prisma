@@ -22,8 +22,8 @@ model Book {
   title          String
   author         String
   genre          String
-  publishedDate  DateTime?     // Corrected the spacing and syntax for optional field
-  isAvailable    Boolean?      @default(true) // Corrected the spacing for optional field
+  publishedDate  DateTime?     
+  isAvailable    Boolean?      @default(true) 
   borrowedBooks  BorrowedBook[]
 }
 

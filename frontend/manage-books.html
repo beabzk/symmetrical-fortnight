@@ -17,16 +17,16 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="Admin Dashboard.html">Back</a>
+                        <a class="nav-link" href="admin-dashboard.html">Back</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="manageusers.html">Manage Users</a>
+                        <a class="nav-link" href="manage-users.html">Manage Users</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="issueReturnBooks.html">Issue/Return Books</a>
+                        <a class="nav-link" href="issue-return-books.html">Issue/Return Books</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="home.html"></a>
+                        <a class="nav-link" href="login.html">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -45,35 +45,41 @@
                 <div class="col-md-3">
                     <input type="text" id="author" class="form-control" placeholder="Author" required>
                 </div>
-                <select id="genre" class="form-control w-25" required="">
-                    <option value="">Select Genre</option>
-                    <option value="Fiction">Fiction</option>
-                    <option value="Non-Fiction">Non-Fiction</option>
-                    <option value="Mystery">Mystery</option>
-                    <option value="Fantasy">Fantasy</option>
-                    <option value="classic">classic</option>
-                </select>
-                <select id="availability" class="form-control w-25" required>
-                    <option value="Available">Available</option>
-                    <option value="Not available">Not available</option>
-                </select>
+                <div class="col-md-3">
+                    <select id="genre" class="form-control" required>
+                        <option value="">Select Genre</option>
+                        <option value="Fiction">Fiction</option>
+                        <option value="Non-Fiction">Non-Fiction</option>
+                        <option value="Mystery">Mystery</option>
+                        <option value="Fantasy">Fantasy</option>
+                        <option value="Classic">Classic</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="availability" class="form-control" required>
+                        <option value="Available">Available</option>
+                        <option value="Not available">Not available</option>
+                    </select>
+                </div>
             </div>
-        </div>
-        
-        <button type="submit" id="toedit" class="btn btn-success mt-2 mb-3 ms-sm-5">Add New Book</button>
-    </form>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Genre</th>
-                <th>Availability</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+            <button type="submit" id="toedit" class="btn btn-success mt-3">Add New Book</button>
+        </form>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Availability</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dynamic content will be inserted here -->
+            </tbody>
+        </table>
+    </div>
 
     <footer class="mt-5">
         <p>© 2025 Library Management System. <a href="#">Privacy Policy</a></p>
@@ -84,4 +90,3 @@
     <script src="app.js"></script>
 </body>
 </html>
-

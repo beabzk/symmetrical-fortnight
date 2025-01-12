@@ -9,9 +9,9 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors({
-    origin: 'http://localhost:5500', // Replace with your frontend's origin
+    origin: ['http://localhost:8080', 'http://127.0.0.1:8080'], // Allow both localhost and IP
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type, Accept, Authorization', // Added Authorization header
+    allowedHeaders: 'Content-Type, Accept, Authorization',
     credentials: true,
   });
 

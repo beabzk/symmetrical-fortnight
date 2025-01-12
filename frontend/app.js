@@ -1,194 +1,161 @@
-const API_URL = 'http://localhost:3333/books'; // Base URL for book-related endpoints
-const AUTH_URL = 'http://localhost:3333/auth'; // Base URL for authentication endpoints
+const API_URL = 'http://localhost:3333/books';
+const AUTH_URL = 'http://localhost:3333/auth';
 
-// Display all books
+function getAuthHeaders() {
+    const token = localStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': token ? `Bearer ${token}` : ''
+    };
+}
+
 function displayBooks() {
-  console.log('displayBooks function called'); // Debugging statement
-  fetch(API_URL)
-    .then(response => {
-      console.log('Fetch response received'); // Debugging statement
-      return response.json();
-    })
-    .then(data => {
-      console.log('Data received:', data); // Debugging statement
-      const bookList = document.getElementById("book-list");
-      bookList.innerHTML = "";
-
-      data.forEach(book => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${book.title}</td>
-          <td>${book.author}</td>
-          <td>${book.genre}</td>
-          <td>${book.isAvailable ? "Yes" : "No"}</td>
-          <td>
-            <button onclick="borrowBook('${book.id}')" ${!book.isAvailable ? "disabled" : ""}>Borrow</button>
-            <button onclick="returnBook('${book.id}')">Return</button>
-          </td>
-        `;
-        bookList.appendChild(tr);
-      });
-    })
-    .catch(error => console.error('Error fetching books:', error));
-}
-
-// Initialize the page by displaying books
-document.addEventListener('DOMContentLoaded', displayBooks);
-// Borrow a book
-function borrowBook(id) {
-  fetch(`${API_URL}/${id}/borrow`, {
-    method: 'POST',
-  })
-    .then(response => {
-      if (response.ok) {
-        alert("Book borrowed successfully!");
-        displayBooks();
-      } else {
-        alert("Failed to borrow the book. It might not be available.");
-      }
-    })
-    .catch(error => console.error('Error borrowing book:', error));
-}
-
-// Return a book
-function returnBook(id) {
-  fetch(`${API_URL}/${id}/return`, {
-    method: 'POST',
-  })
-    .then(response => {
-      if (response.ok) {
-        alert("Book returned successfully!");
-        displayBooks();
-      } else {
-        alert("Failed to return the book. Please try again.");
-      }
-    })
-    .catch(error => console.error('Error returning book:', error));
-}
-
-// Add a new book (Admin only)
-function addBook() {
-  const title = document.getElementById("title").value;
-  const author = document.getElementById("author").value;
-  const publishedDate = document.getElementById("publishedDate").value;
-  const genre = document.getElementById("genre").value;
-  const isAvailable = document.getElementById("isAvailable").checked;
-
-  if (title && author && publishedDate && genre) {
-    const newBook = { title, author, publishedDate, genre, isAvailable };
     fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newBook),
+        headers: getAuthHeaders()
     })
-      .then(response => response.json())
-      .then(data => {
-        alert("Book added successfully!");
-        displayBooks();
-      })
-      .catch(error => console.error('Error adding book:', error));
-  } else {
-    alert("Please fill in all fields.");
-  }
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to fetch books');
+            return response.json();
+        })
+        .then(data => {
+            const bookList = document.getElementById("book-list");
+            if (!bookList) return;
+
+            bookList.innerHTML = "";
+            data.forEach(book => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                <td>${book.title}</td>
+                <td>${book.author}</td>
+                <td>${book.genre}</td>
+                <td>${book.isAvailable ? "Yes" : "No"}</td>
+                <td>
+                    <button onclick="borrowBook('${book.id}')" ${!book.isAvailable ? "disabled" : ""}>Borrow</button>
+                    <button onclick="returnBook('${book.id}')">Return</button>
+                </td>
+            `;
+                bookList.appendChild(tr);
+            });
+        })
+        .catch(error => console.error('Error:', error));
 }
 
-// Update a book (Admin only)
+function borrowBook(id) {
+    fetch(`${API_URL}/${id}/borrow`, {
+        method: 'POST',
+        headers: getAuthHeaders()
+    })
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to borrow book');
+            alert("Book borrowed successfully!");
+            displayBooks();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("Failed to borrow the book. It might not be available.");
+        });
+}
+
+function returnBook(id) {
+    fetch(`${API_URL}/${id}/return`, {
+        method: 'POST',
+        headers: getAuthHeaders()
+    })
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to return book');
+            alert("Book returned successfully!");
+            displayBooks();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("Failed to return the book.");
+        });
+}
+
+function addBook() {
+    const title = document.getElementById("title").value;
+    const author = document.getElementById("author").value;
+    const publishedDate = document.getElementById("publishedDate").value;
+    const genre = document.getElementById("genre").value;
+    const isAvailable = document.getElementById("isAvailable").checked;
+
+    if (!title || !author || !publishedDate || !genre) {
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    fetch(API_URL, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ title, author, publishedDate, genre, isAvailable })
+    })
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to add book');
+            return response.json();
+        })
+        .then(() => {
+            alert("Book added successfully!");
+            displayBooks();
+            clearForm();
+        })
+        .catch(error => console.error('Error:', error));
+}
+
 function updateBook(id) {
-  const updatedData = {
-    title: document.getElementById("updateTitle").value,
-    isAvailable: document.getElementById("updateIsAvailable").checked,
-  };
+    const updatedData = {
+        title: document.getElementById("updateTitle").value,
+        isAvailable: document.getElementById("updateIsAvailable").checked
+    };
 
-  fetch(`${API_URL}/${id}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(updatedData),
-  })
-    .then(response => response.json())
-    .then(data => {
-      alert("Book updated successfully!");
-      displayBooks();
-    })
-    .catch(error => console.error('Error updating book:', error));
-}
-
-// Remove a book (Admin only)
-function removeBook(id) {
-  if (confirm("Are you sure you want to remove this book?")) {
     fetch(`${API_URL}/${id}`, {
-      method: 'DELETE',
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(updatedData)
     })
-      .then(response => {
-        if (response.ok) {
-          alert("Book removed successfully!");
-          displayBooks();
-        } else {
-          alert("Failed to remove the book.");
-        }
-      })
-      .catch(error => console.error('Error removing book:', error));
-  }
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to update book');
+            return response.json();
+        })
+        .then(() => {
+            alert("Book updated successfully!");
+            displayBooks();
+        })
+        .catch(error => console.error('Error:', error));
 }
 
-// Sign up a user
-function signupUser() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const name = document.getElementById("name").value;
-  const userRole = document.getElementById("userRole").value;
+function removeBook(id) {
+    if (!confirm("Are you sure you want to remove this book?")) return;
 
-  if (email && password && name && userRole) {
-    const newUser = { email, password, name, userRole };
-    fetch(`${AUTH_URL}/signup`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newUser),
+    fetch(`${API_URL}/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
     })
-      .then(response => response.json())
-      .then(data => {
-        alert("User signed up successfully!");
-      })
-      .catch(error => console.error('Error signing up user:', error));
-  } else {
-    alert("Please fill in all fields.");
-  }
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to remove book');
+            alert("Book removed successfully!");
+            displayBooks();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("Failed to remove the book.");
+        });
 }
 
-// Sign in a user
-function signinUser() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  if (email && password) {
-    const userCredentials = { email, password };
-    fetch(`${AUTH_URL}/signin`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userCredentials),
-    })
-      .then(response => response.json())
-      .then(data => {
-        alert("User signed in successfully!");
-        // Store token or session if applicable
-      })
-      .catch(error => console.error('Error signing in user:', error));
-  } else {
-    alert("Please fill in all fields.");
-  }
-}
-
-// Clear form inputs
 function clearForm() {
-  document.getElementById("title").value = "";
-  document.getElementById("author").value = "";
-  document.getElementById("publishedDate").value = "";
-  document.getElementById("genre").value = "";
-  document.getElementById("isAvailable").checked = false;
-  document.getElementById("email").value = "";
-  document.getElementById("password").value = "";
-  document.getElementById("name").value = "";
-  document.getElementById("userRole").value = "";
+    const elements = ["title", "author", "publishedDate", "genre", "isAvailable"];
+    elements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            if (element.type === "checkbox") element.checked = false;
+            else element.value = "";
+        }
+    });
 }
 
-// Initialize the page by displaying books
-displayBooks();
+document.addEventListener('DOMContentLoaded', () => {
+    displayBooks();
+    const token = localStorage.getItem('token');
+    if (!token && window.location.pathname !== '/login.html') {
+        window.location.href = './login.html';
+    }
+});

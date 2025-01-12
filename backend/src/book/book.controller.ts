@@ -1,49 +1,59 @@
-/* eslint-disable prettier/prettier */
-import { Controller, Post, Get, Patch, Delete, Body, Param, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { BookService } from './book.service';
-import { RolesGuard } from 'src/auth/guard/roles.guard';
-import { Roles } from 'src/auth/decorator/roles.decorator';
-import { BookCreateDto } from './dto/BookCreateDto';
-import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
+import { BookCreateDto, BookUpdateDto } from './dto';
+import { JwtAuthGuard } from '../auth/guard/jwt.guard';
+import { RolesGuard } from '../auth/guard/roles.guard';
+import { Roles } from '../auth/decorator/roles.decorator';
 
-@UseGuards(JwtAuthGuard) // Guard applied to all routes in this controller
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('books')
 export class BookController {
-    constructor(private bookService: BookService) { }
+  constructor(private readonly bookService: BookService) {}
 
-    @Post()
-    createBook(@Body() data: BookCreateDto, @Req() req) {
-        console.log("inside")
-        console.log("user", req.user.userRole);
-        return this.bookService.createBook(data, req.user.userRole);
-    }
+  @Post()
+  @Roles('admin')
+  create(@Body() createBookDto: BookCreateDto, @Req() req) {
+    return this.bookService.createBook(createBookDto, req.user.userRole);
+  }
 
-    @Get()
-    getBooks() {
-        return this.bookService.getBooks();
-    }
+  @Get()
+  findAll() {
+    return this.bookService.getBooks();
+  }
 
-    @Roles('admin')
-    @UseGuards(RolesGuard) // Additional guard for roles
-    @Patch(':id')
-    updateBook(@Param('id') id: number, @Body() data, @Req() req) {
-        return this.bookService.updateBook(+id, data, req.user.userRole);
-    }
+  @Patch(':id')
+  @Roles('admin')
+  update(
+    @Param('id') id: string,
+    @Body() updateBookDto: BookUpdateDto,
+    @Req() req,
+  ) {
+    return this.bookService.updateBook(+id, updateBookDto, req.user.userRole);
+  }
 
-    @Roles('admin')
-    @UseGuards(RolesGuard) // Additional guard for roles
-    @Delete(':id')
-    deleteBook(@Param('id') id: number, @Req() req) {
-        return this.bookService.deleteBook(+id, req.user.userRole);
-    }
+  @Delete(':id')
+  @Roles('admin')
+  remove(@Param('id') id: string, @Req() req) {
+    return this.bookService.deleteBook(+id, req.user.userRole);
+  }
 
-    @Post(':id/borrow')
-    borrowBook(@Param('id') bookId: number, @Req() req) {
-        return this.bookService.borrowBook(+bookId, req.user.id);
-    }
+  @Post(':id/borrow')
+  borrowBook(@Param('id') bookId: string, @Req() req) {
+    return this.bookService.borrowBook(+bookId, req.user.userId);
+  }
 
-    @Post(':id/return')
-    returnBook(@Param('id') borrowId: number) {
-        return this.bookService.returnBook(+borrowId);
-    }
+  @Post(':id/return')
+  returnBook(@Param('id') borrowId: string) {
+    return this.bookService.returnBook(+borrowId);
+  }
 }

@@ -1,31 +1,25 @@
-// /* eslint-disable prettier/prettier */
-// import {
-//     Body,
-//     Controller,
-//     Get,
-//     Patch,
-//     UseGuards,
-// } from '@nestjs/common';
-// import { User } from '@prisma/client';
-// import { GetUser } from '../auth/decorator';
-// import { JwtGuard } from '../auth/guard/jwt.guard';
-// import { EditUserDto } from './dto';
-// import { UserService } from './user.service';
+import { Controller, Get, UseGuards, Req } from '@nestjs/common';
+import { UserService } from './user.service';
+import { JwtAuthGuard } from '../auth/guard/jwt.guard';
+import { RolesGuard } from '../auth/guard/roles.guard';
+import { Roles } from '../auth/decorator/roles.decorator';
 
-// @UseGuards(JwtGuard)
-// @Controller('users')
-// export class UserController {
-//     constructor(private userService: UserService) { }
-//     @Get('me')
-//     getMe(@GetUser() user: User) {
-//         return user;
-//     }
+@Controller('users')
+export class UserController {
+  constructor(private readonly userService: UserService) {}
 
-//     @Patch()
-//     editUser(
-//         @GetUser('id') userId: number,
-//         @Body() dto: EditUserDto,
-//     ) {
-//         return this.userService.editUser(userId, dto);
-//     }
-// }
+  @Get('me')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('user') // Assuming 'user' is a valid role, adjust as needed
+  async getMe(@Req() req) {
+    // This assumes that your JwtAuthGuard sets the user on the request object
+    return req.user;
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  async getAllUsers() {
+    return this.userService.findAllUsers();
+  }
+}
