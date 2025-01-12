@@ -1,0 +1,104 @@
+/* General Styles */
+body {
+    background-color: #ccccf1;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+/* Navbar Styles */
+.navbar {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-link {
+    font-size: 1.1rem;
+    margin-right: 15px;
+}
+
+.nav-link:hover {
+    color: #0056b3;
+}
+
+/* Header and Buttons */
+h1, h2, h3 {
+    color: #090a0a;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    font-size: 1.1rem;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    font-size: 1.1rem;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    font-size: 1.1rem;
+}
+
+.btn:hover {
+    opacity: 0.91
+}
+
+/* Forms */
+form {
+    background: #ffffff;
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+input, button {
+    font-size: 1rem;
+}
+
+/* Table */
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.table th {
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+/* Card Styles */
+.card {
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.card-title {
+    font-size: 1.25rem;
+}
+
+/* Footer (Optional) */
+footer {
+    background: #343a40;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+footer a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}

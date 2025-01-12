@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Books</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Library Admin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="Admin Dashboard.html">Back</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="manageusers.html">Manage Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="issueReturnBooks.html">Issue/Return Books</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="home.html"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2>Manage Books</h2>
+
+        <!-- Add Book Form -->
+        <form id="addBookForm" class="mb-5">
+            <div class="row">
+                <div class="col-md-3">
+                    <input type="text" id="title" class="form-control" placeholder="Title" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" id="author" class="form-control" placeholder="Author" required>
+                </div>
+                <select id="genre" class="form-control w-25" required="">
+                    <option value="">Select Genre</option>
+                    <option value="Fiction">Fiction</option>
+                    <option value="Non-Fiction">Non-Fiction</option>
+                    <option value="Mystery">Mystery</option>
+                    <option value="Fantasy">Fantasy</option>
+                    <option value="classic">classic</option>
+                </select>
+                <select id="availability" class="form-control w-25" required>
+                    <option value="Available">Available</option>
+                    <option value="Not available">Not available</option>
+                </select>
+            </div>
+        </div>
+        
+        <button type="submit" id="toedit" class="btn btn-success mt-2 mb-3 ms-sm-5">Add New Book</button>
+    </form>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Genre</th>
+                <th>Availability</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <footer class="mt-5">
+        <p>© 2025 Library Management System. <a href="#">Privacy Policy</a></p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script/managebook/ManageBooks.js"></script> 
+    <script src="app.js"></script>
+</body>
+</html>
+

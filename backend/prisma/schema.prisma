@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  userRole      String   @default("user")
+  borrowedBooks BorrowedBook[]
+  hash      String
+}
+
+model Book {
+  id             Int           @id @default(autoincrement())
+  title          String
+  author         String
+  genre          String
+  publishedDate  DateTime?     // Corrected the spacing and syntax for optional field
+  isAvailable    Boolean?      @default(true) // Corrected the spacing for optional field
+  borrowedBooks  BorrowedBook[]
+}
+
+
+model BorrowedBook {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  bookId    Int
+  borrowDate DateTime
+  returnDate DateTime?
+  publishedDate DateTime
+  user      User     @relation(fields: [userId], references: [id])
+  book      Book     @relation(fields: [bookId], references: [id])
+}
